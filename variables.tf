@@ -8,7 +8,7 @@ variable "domain_name" {
 }
 
 variable "subnet_ids" {
-  type = set(string)
+  type = list(string)
 }
 
 variable "vpc_id" {
