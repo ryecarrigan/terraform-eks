@@ -1,0 +1,16 @@
+# Required variables
+cluster_name =
+domain_name = # Must be an existing Route53 zone!
+subnet_ids =
+vpc_id =
+
+# Optional variables
+#instance_types = # Defaults to ["m5.xlarge", "m5a.xlarge", "m4.xlarge"]
+#key_name = # Defaults to empty string, which will be interpreted as none
+#kubeconfig_file = # Defaults to "eks_kubeconfig"
+#kubernetes_version = # Defaults to 1.21
+#node_group_desired_size = # Defaults to 1
+#node_group_max_size = # Defaults to 8
+#node_group_min_size = # Defaults to 1
+#tags = # Defaults to empty map
+#zone_count = # Defaults to 3
