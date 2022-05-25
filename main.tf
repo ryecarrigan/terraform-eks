@@ -112,7 +112,7 @@ module "eks" {
 ################################################################################
 
 module "acm_certificate" {
-  source = "github.com/ryecarrigan/terraform-cloudbees-ci//modules/acm-certificate?ref=v10.5.3"
+  source = "./modules/acm-certificate"
 
   domain_name = var.domain_name
   subdomain   = var.acm_subdomain
@@ -125,7 +125,7 @@ module "acm_certificate" {
 
 module "aws_load_balancer_controller" {
   depends_on = [module.acm_certificate, module.eks]
-  source     = "github.com/ryecarrigan/terraform-cloudbees-ci//modules/aws-load-balancer-controller?ref=v10.5.3"
+  source     = "./modules/aws-load-balancer-controller"
 
   aws_account_id            = local.aws_account_id
   aws_region                = local.aws_region
@@ -137,7 +137,7 @@ module "aws_load_balancer_controller" {
 
 module "cluster_autoscaler" {
   depends_on = [module.eks]
-  source     = "github.com/ryecarrigan/terraform-cloudbees-ci//modules/cluster-autoscaler-eks?ref=v10.5.3"
+  source     = "./modules/cluster-autoscaler-eks"
 
   aws_account_id     = local.aws_account_id
   aws_region         = local.aws_region
@@ -148,7 +148,7 @@ module "cluster_autoscaler" {
 
 module "ebs_driver" {
   depends_on = [module.eks]
-  source     = "github.com/ryecarrigan/terraform-cloudbees-ci//modules/aws-ebs-csi-driver?ref=v10.5.3"
+  source     = "./modules/aws-ebs-csi-driver"
 
   aws_account_id   = local.aws_account_id
   aws_region       = local.aws_region
@@ -159,7 +159,7 @@ module "ebs_driver" {
 
 module "external_dns" {
   depends_on = [module.eks]
-  source     = "github.com/ryecarrigan/terraform-cloudbees-ci//modules/external-dns-eks?ref=v10.5.3"
+  source     = "./modules/external-dns-eks"
 
   aws_account_id  = local.aws_account_id
   cluster_name    = var.cluster_name
