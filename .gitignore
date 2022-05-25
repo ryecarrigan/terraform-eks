@@ -1,5 +1,7 @@
 .terraform
 *.hcl
 *.iml
+*.tfstate
 *.tfvars
+*kubeconfig*
 backend.tf

@@ -19,7 +19,6 @@ provider "helm" {
 }
 
 data "aws_caller_identity" "current" {}
-data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster_auth" "auth" {
   name = module.eks.cluster_id
@@ -46,7 +45,6 @@ locals {
   kubeconfig_file        = "${path.cwd}/${var.kubeconfig_file}"
   node_group_policies    = ["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly", "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy", "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]
   oidc_issuer            = trimprefix(module.eks.cluster_oidc_issuer_url, "https://")
-  this                   = toset(["this"])
 }
 
 
@@ -181,7 +179,7 @@ resource "null_resource" "update_kubeconfig" {
 }
 
 resource "null_resource" "update_default_storage_class" {
-  depends_on = [module.ebs_driver]
+  depends_on = [null_resource.update_kubeconfig, module.ebs_driver]
 
   provisioner "local-exec" {
     command = "kubectl annotate --overwrite storageclass ${local.default_storage_class} storageclass.kubernetes.io/is-default-class=false"
