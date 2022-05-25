@@ -5,6 +5,7 @@ subnet_ids =
 vpc_id =
 
 # Optional variables
+#acm_subdomain = # Defaults to "*"
 #instance_types = # Defaults to ["m5.xlarge", "m5a.xlarge", "m4.xlarge"]
 #key_name = # Defaults to empty string, which will be interpreted as none
 #kubeconfig_file = # Defaults to "eks_kubeconfig"
@@ -13,4 +14,3 @@ vpc_id =
 #node_group_max_size = # Defaults to 8
 #node_group_min_size = # Defaults to 1
 #tags = # Defaults to empty map
-#zone_count = # Defaults to 3

@@ -31,8 +31,12 @@ data "aws_route53_zone" "domain" {
   name = var.domain_name
 }
 
+data "aws_subnet" "this" {
+  for_each = toset(var.subnet_ids)
+  id       = each.value
+}
+
 locals {
-  availability_zones     = slice(data.aws_availability_zones.available.names, 0, var.zone_count)
   aws_account_id         = data.aws_caller_identity.current.account_id
   aws_region             = data.aws_region.current.name
   cluster_auth_token     = data.aws_eks_cluster_auth.auth.token
@@ -40,6 +44,7 @@ locals {
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   default_storage_class  = "gp2"
   kubeconfig_file        = "${path.cwd}/${var.kubeconfig_file}"
+  node_group_policies    = ["arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly", "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy", "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]
   oidc_issuer            = trimprefix(module.eks.cluster_oidc_issuer_url, "https://")
   this                   = toset(["this"])
 }
@@ -49,21 +54,14 @@ locals {
 # Amazon EKS cluster
 ################################################################################
 
-module "iam" {
-  source = "github.com/ryecarrigan/terraform-cloudbees-ci//modules/eks-iam-roles?ref=v10.5.3"
-
-  cluster_name = var.cluster_name
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "18.17.0"
 
   cluster_name    = var.cluster_name
   cluster_version = var.kubernetes_version
-  create_iam_role = false
   enable_irsa     = true
-  iam_role_arn    = module.iam.cluster_role_arn
+  iam_role_name   = "${var.cluster_name}-cluster"
   subnet_ids      = var.subnet_ids
   vpc_id          = var.vpc_id
 
@@ -72,18 +70,18 @@ module "eks" {
     max_size     = var.node_group_max_size
     desired_size = var.node_group_desired_size
 
-    create_iam_role       = false
-    create_security_group = false
-    iam_role_arn          = module.iam.node_role_arn
-    instance_types        = var.instance_types
-    key_name              = var.key_name
-    labels                = {}
-    launch_template_tags  = var.tags
+    create_security_group        = false
+    iam_role_additional_policies = local.node_group_policies
+    instance_types               = var.instance_types
+    key_name                     = var.key_name
+    labels                       = {}
+    launch_template_tags         = var.tags
   }
 
-  eks_managed_node_groups = { for index, zone in local.availability_zones :
-    "${var.cluster_name}-${zone}" => {
-      subnet_ids = [var.subnet_ids[index]]
+  eks_managed_node_groups = { for subnet_id, subnet in data.aws_subnet.this :
+    "${var.cluster_name}-${lookup(subnet, "availability_zone")}" => {
+      iam_role_name = "${var.cluster_name}-${lookup(subnet, "availability_zone")}"
+      subnet_ids    = [subnet_id]
     }
   }
 
@@ -117,7 +115,7 @@ module "acm_certificate" {
   source = "github.com/ryecarrigan/terraform-cloudbees-ci//modules/acm-certificate?ref=v10.5.3"
 
   domain_name = var.domain_name
-  subdomain   = "*"
+  subdomain   = var.acm_subdomain
 }
 
 

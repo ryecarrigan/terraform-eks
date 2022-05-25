@@ -16,6 +16,11 @@ variable "vpc_id" {
 }
 
 # Optional variables
+variable "acm_subdomain" {
+  default = "*"
+  type    = string
+}
+
 variable "instance_types" {
   default = ["m5.xlarge", "m5a.xlarge", "m4.xlarge"]
   type    = set(string)
@@ -59,14 +64,4 @@ variable "node_group_min_size" {
 variable "tags" {
   default = {}
   type    = map(string)
-}
-
-variable "zone_count" {
-  default = 3
-  type    = number
-
-  validation {
-    condition     = var.zone_count > 0
-    error_message = "Zone count must be non-zero and positive."
-  }
 }
