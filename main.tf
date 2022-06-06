@@ -54,7 +54,7 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "18.17.0"
+  version = "18.23.0"
 
   cluster_name    = var.cluster_name
   cluster_version = var.kubernetes_version
@@ -110,6 +110,7 @@ module "eks" {
 ################################################################################
 
 module "acm_certificate" {
+  count  = var.create_acm_certificate ? 1 : 0
   source = "./modules/acm-certificate"
 
   domain_name = var.domain_name

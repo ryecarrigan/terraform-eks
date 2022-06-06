@@ -6,6 +6,7 @@ vpc_id =
 
 # Optional variables
 #acm_subdomain = # Defaults to "*"
+#create_acm_certificate = # Defaults to false
 #instance_types = # Defaults to ["m5.xlarge", "m5a.xlarge", "m4.xlarge"]
 #key_name = # Defaults to empty string, which will be interpreted as none
 #kubeconfig_file = # Defaults to "eks_kubeconfig"

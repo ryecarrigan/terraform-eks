@@ -21,6 +21,11 @@ variable "acm_subdomain" {
   type    = string
 }
 
+variable "create_acm_certificate" {
+  default = false
+  type    = bool
+}
+
 variable "instance_types" {
   default = ["m5.xlarge", "m5a.xlarge", "m4.xlarge"]
   type    = set(string)
