@@ -63,6 +63,9 @@ module "eks" {
   subnet_ids      = var.subnet_ids
   vpc_id          = var.vpc_id
 
+  create_node_security_group = false
+  node_security_group_id     = var.node_security_group_id
+
   eks_managed_node_group_defaults = {
     min_size     = var.node_group_min_size
     max_size     = var.node_group_max_size

@@ -1,6 +1,7 @@
 # Required variables
 cluster_name =
 domain_name = # Must be an existing Route53 zone!
+node_security_group_id =
 subnet_ids =
 vpc_id =
 

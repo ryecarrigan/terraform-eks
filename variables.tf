@@ -7,6 +7,10 @@ variable "domain_name" {
   type = string
 }
 
+variable "node_security_group_id" {
+  type = string
+}
+
 variable "subnet_ids" {
   type = list(string)
 }
