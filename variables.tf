@@ -7,10 +7,6 @@ variable "domain_name" {
   type = string
 }
 
-variable "node_security_group_id" {
-  type = string
-}
-
 variable "subnet_ids" {
   type = list(string)
 }
@@ -22,6 +18,11 @@ variable "vpc_id" {
 # Optional variables
 variable "acm_subdomain" {
   default = "*"
+  type    = string
+}
+
+variable "cluster_security_group_id" {
+  default = ""
   type    = string
 }
 
@@ -68,6 +69,11 @@ variable "node_group_max_size" {
 variable "node_group_min_size" {
   default = 1
   type    = number
+}
+
+variable "node_security_group_id" {
+  default = ""
+  type    = string
 }
 
 variable "tags" {
